@@ -38,17 +38,14 @@ class Cling(WSGIHandler):
     """WSGI middleware that intercepts calls to the static files
     directory, as defined by the STATIC_URL setting, and serves those files.
     """
-    def __init__(self, application, base_dir=None, base_url=None, ignore_debug=False, cache_config=None):
+    def __init__(self, application, base_dir=None, base_url=None, ignore_debug=False, **kwargs):
         self.application = application
         self.ignore_debug = ignore_debug
         if not base_dir:
             base_dir = self.get_base_dir()
         self.base_url = urlparse(base_url or self.get_base_url())
 
-        if cache_config == None:
-            cache_config = []
-
-        self.cling = static.Cling(base_dir, cache_config=cache_config)
+        self.cling = static.Cling(base_dir, **kwargs)
         try:
             self.debug_cling = DebugHandler(application, base_dir=base_dir)
         except TypeError:
